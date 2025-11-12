@@ -6,14 +6,19 @@ import (
 )
 
 type Peer struct {
-	ID   string
-	Addr *net.UDPAddr
-	Conn *net.UDPConn
+	id     string
+	addr   *net.UDPAddr
+	conn   *net.UDPConn
+	failed bool
 }
 
-func (p *Peer) Send() {
+func (p *Peer) GetID() string {
+	return p.id
+}
+
+func (p *Peer) Send(data []byte) {
 	go func() {
-		_, err := p.Conn.WriteToUDP([]byte{}, p.Addr)
+		_, err := p.conn.WriteToUDP(data, p.addr)
 		if err != nil {
 			log.Println(err)
 		}

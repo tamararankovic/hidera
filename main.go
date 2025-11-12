@@ -8,24 +8,28 @@ import (
 	"time"
 
 	"github.com/tamararankovic/hidera/config"
+	"github.com/tamararankovic/hidera/hidera"
 	"github.com/tamararankovic/hidera/peers"
 )
 
 func main() {
-	time.Sleep(15 * time.Second)
+	time.Sleep(7 * time.Second)
 
-	conf := config.LoadFromEnv()
+	params := config.LoadParamsFromEnv()
+	conf := config.LoadConfigFromEnv()
 	peers, err := peers.NewPeers(conf)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	log.Println(conf)
-	log.Println(peers.Peers)
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
+	hidera := hidera.NewHidera(params, peers)
+
+	hidera.Run()
+
 	<-quit
 
-	log.Println("Received shutdown signal...")
+	log.Println("received shutdown signal...")
 }

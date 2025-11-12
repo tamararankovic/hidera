@@ -5,20 +5,17 @@ import (
 	"net"
 	"os"
 	"strconv"
-
-	"github.com/tamararankovic/hidera/util"
+	"strings"
 )
 
 type Config struct {
-	ID         string
 	ListenIP   string
 	ListenPort int
 	PeersIDs   []string
 	PeersIPs   []string
 }
 
-func LoadFromEnv() Config {
-	id := os.Getenv("ID")
+func LoadConfigFromEnv() Config {
 	listenIP := os.Getenv("LISTEN_IP")
 	listenHost := os.Getenv("LISTEN_HOST")
 	listenPortStr := os.Getenv("LISTEN_PORT")
@@ -45,7 +42,6 @@ func LoadFromEnv() Config {
 	}
 
 	c := Config{
-		ID:         id,
 		ListenIP:   listenIP,
 		ListenPort: listenPort,
 	}
@@ -58,13 +54,13 @@ func LoadFromEnv() Config {
 		log.Fatalln("error: PEER_IDS is not set")
 	}
 
-	peerIDs := util.SplitAndTrim(peerIDsStr)
-	peerIPs := util.SplitAndTrim(peerIPsStr)
-	peerHosts := util.SplitAndTrim(peerHostsStr)
+	peerIDs := splitAndTrim(peerIDsStr)
+	peerIPs := splitAndTrim(peerIPsStr)
+	peerHosts := splitAndTrim(peerHostsStr)
 
 	maxLen := len(peerIDs)
-	util.EnsureSameLength(&peerIPs, maxLen)
-	util.EnsureSameLength(&peerHosts, maxLen)
+	ensureSameLength(&peerIPs, maxLen)
+	ensureSameLength(&peerHosts, maxLen)
 
 	for i := range maxLen {
 		id := peerIDs[i]
@@ -92,4 +88,22 @@ func LoadFromEnv() Config {
 
 func (c Config) isValid() bool {
 	return len(c.PeersIDs) == len(c.PeersIPs)
+}
+
+func splitAndTrim(s string) []string {
+	if s == "" {
+		return []string{}
+	}
+	parts := strings.Split(s, ",")
+	for i := range parts {
+		parts[i] = strings.TrimSpace(parts[i])
+	}
+	return parts
+}
+
+func ensureSameLength(slice *[]string, n int) {
+	if len(*slice) < n {
+		padding := make([]string, n-len(*slice))
+		*slice = append(*slice, padding...)
+	}
 }
