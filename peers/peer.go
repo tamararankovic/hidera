@@ -22,5 +22,8 @@ func (p *Peer) Send(data []byte) {
 		if err != nil {
 			log.Println(err)
 		}
+		MessagesSentLock.Lock()
+		MessagesSent++
+		MessagesSentLock.Unlock()
 	}()
 }

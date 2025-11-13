@@ -52,6 +52,17 @@ func (ps *Peers) GetPeers() []Peer {
 	return active
 }
 
+func (ps *Peers) GetFailedPeers() []Peer {
+	failed := make([]Peer, 0)
+	for _, p := range ps.peers {
+		if !p.failed {
+			continue
+		}
+		failed = append(failed, p)
+	}
+	return failed
+}
+
 func (ps *Peers) PeerFailed(id string) {
 	p := ps.findPeerById(id)
 	if p == nil {
@@ -68,6 +79,9 @@ func (ps *Peers) listen() {
 			log.Println("read error:", err)
 			continue
 		}
+		MessagesRcvdLock.Lock()
+		MessagesRcvd++
+		MessagesRcvdLock.Unlock()
 		peer := ps.findPeerByAddr(sender)
 		if peer == nil {
 			log.Println("no peer found for address", sender)

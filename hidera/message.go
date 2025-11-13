@@ -7,6 +7,7 @@ import (
 const LOCAL_AGG_MSG_TYPE int8 = 1
 const GLOBAL_AGG_MSG_TYPE int8 = 2
 const GLOBAL_AGG_LAZY_MSG_TYPE int8 = 3
+const PING_MSG_TYPE int8 = 4
 
 type Msg interface {
 	Type() int8
@@ -45,6 +46,13 @@ func (m GlobalAggLazyMsg) Type() int8 {
 	return GLOBAL_AGG_LAZY_MSG_TYPE
 }
 
+type PingMsg struct {
+}
+
+func (m PingMsg) Type() int8 {
+	return PING_MSG_TYPE
+}
+
 func MsgToBytes(msg Msg) []byte {
 	msgBytes, _ := json.Marshal(&msg)
 	return append([]byte{byte(msg.Type())}, msgBytes...)
@@ -60,9 +68,11 @@ func BytesToMsg(msgBytes []byte) Msg {
 		msg = &GlobalAggMsg{}
 	case GLOBAL_AGG_LAZY_MSG_TYPE:
 		msg = &GlobalAggLazyMsg{}
+	case PING_MSG_TYPE:
+		msg = &PingMsg{}
 	}
-	if msg == nil {
-		return nil
+	if msg.Type() == PING_MSG_TYPE {
+		return msg
 	}
 	json.Unmarshal(msgBytes[1:], msg)
 	return msg
