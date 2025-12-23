@@ -6,6 +6,7 @@ import (
 	"math"
 	"math/rand"
 	"slices"
+	"strconv"
 	"sync"
 	"time"
 
@@ -15,7 +16,7 @@ import (
 
 type Hidera struct {
 	Params        config.Params
-	Value         int
+	Value         float64
 	Peers         *peers.Peers
 	Round         int
 	CountEstimate int
@@ -28,9 +29,13 @@ type Hidera struct {
 
 func NewHidera(params config.Params, peers *peers.Peers) *Hidera {
 	log.Printf("[INIT] NewHidera created with ID=%s", params.ID)
+	val, err := strconv.Atoi(params.ID)
+	if err != nil {
+		log.Fatal(err)
+	}
 	return &Hidera{
 		Params:        params,
-		Value:         1,
+		Value:         float64(val),
 		Peers:         peers,
 		Round:         0,
 		CountEstimate: 1,

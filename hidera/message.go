@@ -15,7 +15,7 @@ type Msg interface {
 
 type LocalAggMsg struct {
 	TreeID      string
-	Value       int
+	Value       float64
 	Count       int
 	SenderRound int
 }
@@ -26,7 +26,7 @@ func (m LocalAggMsg) Type() int8 {
 
 type GlobalAggMsg struct {
 	TreeID      string
-	Value       int
+	Value       float64
 	Count       int
 	ValueRound  int
 	SenderRound int

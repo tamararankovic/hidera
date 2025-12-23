@@ -47,7 +47,7 @@ func NewTree(params config.Params, id string, round int, ps []peers.Peer) *Tree 
 }
 
 func (t *Tree) executeRound(currLocal Aggregate, bestTree bool) {
-	log.Printf("[EXEC ROUND] tree=%s isRoot=%t bestTree=%t localValue=%d localRound=%d",
+	log.Printf("[EXEC ROUND] tree=%s isRoot=%t bestTree=%t localValue=%f localRound=%d",
 		t.ID, t.IsRoot, bestTree, currLocal.Value, currLocal.Round)
 
 	t.CurrRound = currLocal.Round
@@ -120,7 +120,7 @@ func (t *Tree) sendLocalAgg(currLocal Aggregate) {
 }
 
 func (t *Tree) onLocalAggMsg(msg LocalAggMsg, sender peers.Peer) {
-	log.Printf("[RCV LOCAL_AGG] tree=%s from=%s value=%d round=%d", t.ID, sender.GetID(), msg.Value, msg.SenderRound)
+	log.Printf("[RCV LOCAL_AGG] tree=%s from=%s value=%f round=%d", t.ID, sender.GetID(), msg.Value, msg.SenderRound)
 
 	if t.LastRound[sender.GetID()] > msg.SenderRound {
 		log.Printf("[RCV LOCAL_AGG] tree=%s from=%s DROPPED (old round)", t.ID, sender.GetID())
@@ -146,7 +146,7 @@ func (t *Tree) onLocalAggMsg(msg LocalAggMsg, sender peers.Peer) {
 }
 
 func (t *Tree) onGlobalAggMsg(msg GlobalAggMsg, sender peers.Peer, localRound int) {
-	log.Printf("[RCV GLOBAL_AGG] tree=%s from=%s value=%d count=%d vr=%d",
+	log.Printf("[RCV GLOBAL_AGG] tree=%s from=%s value=%f count=%d vr=%d",
 		t.ID, sender.GetID(), msg.Value, msg.Count, msg.ValueRound)
 
 	if t.LastRound[sender.GetID()] > msg.SenderRound {
@@ -163,7 +163,7 @@ func (t *Tree) onGlobalAggMsg(msg GlobalAggMsg, sender peers.Peer, localRound in
 	}
 
 	if t.GlobalAgg == nil || msg.ValueRound > t.GlobalAgg.Round {
-		log.Printf("[GLOBAL_AGG UPDATE] tree=%s new global agg value=%d count=%d",
+		log.Printf("[GLOBAL_AGG UPDATE] tree=%s new global agg value=%f count=%d",
 			t.ID, msg.Value, msg.Count)
 		t.GlobalAgg = &Aggregate{
 			Value: msg.Value,

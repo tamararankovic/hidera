@@ -1,7 +1,7 @@
 package hidera
 
 type Aggregate struct {
-	Value int
+	Value float64
 	Count int
 	Round int
 }

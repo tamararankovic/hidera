@@ -53,11 +53,11 @@ func main() {
 
 func exportAll() {
 	for range time.NewTicker(time.Second).C {
-		value := 0
+		value := 0.0
 		h.Lock.Lock()
 		tree := h.FindBestTree()
 		if tree != nil && tree.GlobalAgg != nil {
-			value = tree.GlobalAgg.Value
+			value = tree.GlobalAgg.Value / float64(tree.GlobalAgg.Count)
 		}
 		h.Lock.Unlock()
 		exportResult(float64(value), 0, time.Now().UnixNano())
@@ -137,7 +137,7 @@ func setMetricsHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	} else {
 		log.Println("new value", val)
-		h.Value = int(val)
+		h.Value = val
 	}
 	w.WriteHeader(http.StatusOK)
 }
