@@ -41,7 +41,7 @@ func main() {
 	log.Println("Metrics server listening on :9200/metrics")
 
 	go func() {
-		log.Fatal(http.ListenAndServe("0.0.0.0:9200", r))
+		log.Fatal(http.ListenAndServe(conf.ListenIP+":9200", r))
 	}()
 
 	h.Run()
