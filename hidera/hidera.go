@@ -196,7 +196,11 @@ func (h *Hidera) removeInactiveTrees() {
 	toRemove := make([]string, 0)
 
 	for id, tree := range h.Trees {
-		if (h.Round - tree.LastGlobalRound) > h.Params.Rmax {
+		level := 1
+		if tree.Level > 0 {
+			level = tree.Level
+		}
+		if (h.Round - tree.LastGlobalRound) > level*h.Params.Rmax {
 			log.Printf("[TREE_EXPIRED] Node %s removing inactive tree %s", h.Params.ID, id)
 			toRemove = append(toRemove, id)
 		}

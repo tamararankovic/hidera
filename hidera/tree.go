@@ -15,6 +15,7 @@ type Tree struct {
 	FirstGlobalRound  int
 	LastGlobalRound   int
 	Parent            *peers.Peer
+	Level             int
 	Children          []peers.Peer
 	Lazy              []peers.Peer
 	LastRound         map[string]int
@@ -87,6 +88,7 @@ func (t *Tree) sendGlobalAgg(currLocal Aggregate) {
 		TreeID:      t.ID,
 		Value:       t.GlobalAgg.Value,
 		Count:       t.GlobalAgg.Count,
+		Level:       t.Level,
 		ValueRound:  t.GlobalAgg.Round,
 		SenderRound: t.CurrRound,
 	})
@@ -170,6 +172,7 @@ func (t *Tree) onGlobalAggMsg(msg GlobalAggMsg, sender peers.Peer, localRound in
 			Count: msg.Count,
 			Round: msg.ValueRound,
 		}
+		t.Level = msg.Level + 1
 		t.LastGlobalRound = localRound
 	}
 }

@@ -28,6 +28,7 @@ type GlobalAggMsg struct {
 	TreeID      string
 	Value       float64
 	Count       int
+	Level       int
 	ValueRound  int
 	SenderRound int
 }
