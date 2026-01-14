@@ -276,6 +276,7 @@ func (h *Hidera) computeCount() {
 	if tree == nil || tree.GlobalAgg == nil || tree.GlobalAgg.Round-tree.FirstGlobalRound <= h.Params.Rfull {
 		return
 	}
+	log.Println("best tree", tree.ID)
 	h.CountEstimate = tree.GlobalAgg.Count
 	log.Printf("[COUNT_COMPUTED] Node %s new count = %d", h.Params.ID, h.CountEstimate)
 }
